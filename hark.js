@@ -17,6 +17,7 @@ function getMaxVolume (analyser, fftBins) {
 var audioContextType = window.AudioContext || window.webkitAudioContext;
 // use a single audio context due to hardware limits
 var audioContext = null;
+var noOfStreams = 0;
 module.exports = function(stream, options) {
   var harker = new WildEmitter();
 
@@ -32,6 +33,9 @@ module.exports = function(stream, options) {
       play = options.play,
       history = options.history || 10,
       running = true;
+
+  //Increase counter to keep track of number of streams used.
+  noOfStreams += 1;
 
   //Setup Audio Context
   if (!audioContext) {
@@ -78,6 +82,11 @@ module.exports = function(stream, options) {
     }
     analyser.disconnect();
     sourceNode.disconnect();
+    noOfStreams -=1;
+    if (noOfStreams === 0) {
+      audioContext.close();
+      audioContext = null;
+    }
   };
   harker.speakingHistory = [];
   for (var i = 0; i < history; i++) {
