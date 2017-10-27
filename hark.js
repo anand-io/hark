@@ -74,6 +74,9 @@ module.exports = function(stream, options) {
   };
 
   harker.stop = function() {
+    if(!running) {
+      return;
+    }
     running = false;
     harker.emit('volume_change', -100, threshold);
     if (harker.speaking) {
