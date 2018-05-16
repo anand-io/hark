@@ -103,6 +103,7 @@ module.exports = function(stream, options) {
     sourceNode.disconnect();
     noOfStreams -=1;
     if (noOfStreams === 0) {
+      audioContext.onstatechange = null;
       audioContext.close();
       audioContext = null;
     }
